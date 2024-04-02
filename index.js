@@ -11,7 +11,7 @@ app.use(
   cors({
     origin: [
       "http://localhost:5173",
-      "https://task-management-five-nu.vercel.app",
+      "https://task-management-job.web.app","https://task-management-job.firebaseapp.com"
     ],
     credentials: true,
   })
