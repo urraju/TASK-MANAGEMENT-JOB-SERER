@@ -9,7 +9,10 @@ const port = process.env.PORT || 5000;
 
 app.use(
   cors({
-    origin: ["http://localhost:5173"],
+    origin: [
+      "http://localhost:5173",
+      "https://task-management-five-nu.vercel.app",
+    ],
     credentials: true,
   })
 );
@@ -20,7 +23,6 @@ app.use(cookieParser());
 
 // verify token part
 const verifyToken = (req, res, next) => {
-  
   const token = req.cookies.token;
   console.log("Extracted Token:", token);
 
@@ -54,13 +56,15 @@ async function run() {
     app.post("/jwt", async (req, res) => {
       const user = req.body;
       const token = jwt.sign(user, process.env.SECRET, { expiresIn: "1hr" });
-      res.cookie("token", token, {
-        httpOnly: true,
-        secure: true,
-        sameSite: "none",
-      }).send({ success: true });
+      res
+        .cookie("token", token, {
+          httpOnly: true,
+          secure: true,
+          sameSite: "none",
+        })
+        .send({ success: true });
     });
-    
+
     app.post("/logout", async (req, res) => {
       res.clearCookie("token").send({ success: true });
     });
@@ -70,7 +74,7 @@ async function run() {
       const result = await taskCollection.insertOne(query);
       res.send(result);
     });
-    app.get("/task",  async (req, res) => {
+    app.get("/task", async (req, res) => {
       const query = req.query?.email;
       const filter = { userEmail: query };
       const result = await taskCollection.find(filter).toArray();
